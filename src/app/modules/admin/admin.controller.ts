@@ -1,17 +1,13 @@
 import express, { NextFunction, Request, Response } from "express";
-import { prisma } from "../../../app";
 import { adminService } from "./admin.service";
 import pick from "../../../utils/pick";
 import { adminFilterFields } from "./admin.constant";
 import sendResponse from "../../../utils/sendResponse";
 import httpStatus from "http-status";
+import catchAsync from "../../../utils/catchAsync";
 
-const getAllAdminsController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const getAllAdminsController = catchAsync(
+  async (req: Request, res: Response) => {
     const filters = pick(req.query, adminFilterFields);
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
@@ -24,17 +20,11 @@ const getAllAdminsController = async (
       meta: result.meta,
       data: result.data,
     });
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-const getSingleAdminController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const getSingleAdminController = catchAsync(
+  async (req: Request, res: Response) => {
     const result = await adminService.getSingleAdminService(req.params.id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -42,17 +32,11 @@ const getSingleAdminController = async (
       message: "single admin found",
       data: result,
     });
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-const updateAdminController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const updateAdminController = catchAsync(
+  async (req: Request, res: Response) => {
     const result = await adminService.updateAdminService(
       req.params.id,
       req.body
@@ -63,17 +47,11 @@ const updateAdminController = async (
       message: "admin updated",
       data: result,
     });
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-const deleteAdminController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const deleteAdminController = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const result = await adminService.deleteAdminService(req.params.id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -81,17 +59,11 @@ const deleteAdminController = async (
       message: "admin deleted",
       data: result,
     });
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-const softDeleteAdminController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const softDeleteAdminController = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const result = await adminService.softDeleteAdminService(req.params.id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -99,10 +71,8 @@ const softDeleteAdminController = async (
       message: "admin deleted",
       data: result,
     });
-  } catch (error) {
-    next(error);
   }
-};
+);
 
 export const adminController = {
   getAllAdminsController,
